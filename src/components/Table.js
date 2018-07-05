@@ -28,18 +28,6 @@ const styles = {
  * A more complex example, allowing the table height to be set, and key boolean properties to be toggled.
  */
 export default class ProccessTable extends Component {
-    state = {
-        fixedHeader: true,
-        fixedFooter: true,
-        stripedRows: false,
-        showRowHover: false,
-        selectable: true,
-        multiSelectable: false,
-        enableSelectAll: false,
-        deselectOnClickaway: true,
-        showCheckboxes: true,
-        height: '300px',
-    };
 
     constructor(props) {
         super(props);

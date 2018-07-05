@@ -3,7 +3,6 @@ import pm2 from 'pm2';
 import LoadingIndicator from './LoadingIndicator';
 import ProccessTable from './Table';
 import FlatButton from 'material-ui/FlatButton';
-import Refresh from './Refresh';
 
 
 const styles = {
