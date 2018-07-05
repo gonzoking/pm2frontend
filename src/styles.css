@@ -12,8 +12,13 @@
     margin-top: 10px;
     font-size: 12px;
     color: blue;
+    margin-top: 8px;
 }
-
+.maintitle{
+    font-weight: bold;
+    font-size: 16px;
+    padding-left: 5px;
+}
 .tableRow td{
     height:15px;
 }
@@ -41,4 +46,8 @@
     padding-top: 30%;
     padding-bottom: auto;
     z-index:10000;
+}
+
+.refresh_icon{
+    background-image: url('/images/refresh.png');
 }

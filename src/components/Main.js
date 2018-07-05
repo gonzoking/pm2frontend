@@ -3,33 +3,37 @@ import pm2 from 'pm2';
 import LoadingIndicator from './LoadingIndicator';
 import ProccessTable from './Table';
 import FlatButton from 'material-ui/FlatButton';
-
+import Refresh from "./Refresh";
+import IconButton from 'material-ui/IconButton';
 
 const styles = {
     buttonStart: {
         position: 'absolute',
         top:'10px',
         right:'0px',
-        color: 'green',
-        width:'60px'
+        color: '#26c2f0',
+        width:'60px',
+        fontWeight: 'bold'
     },
     buttonStop: {
         position: 'absolute',
         top:'10px',
         right:'80px',
-        color: 'orange'
+        color: 'orange',
+        fontWeight: 'bold'
     },
     buttonKill: {
         position: 'absolute',
         top:'10px',
         right:'160px',
-        color: 'red'
+        color: 'red',
+        fontWeight: 'bold'
     }
     ,
     buttonRefresh: {
         position: 'absolute',
-        top:'10px',
-        right:'240px',
+        top:'-2px',
+        left:'150px',
         color: 'blue'
     }
 
@@ -134,11 +138,11 @@ export class Main extends React.Component {
         return (
             <div className="main">
                 {this.state.showBlock ? <div className="blockDiv">WORKING...</div> : ''}
-                <p>PM2 - Proccess list</p>
+                <p className="maintitle">PM2 - Proccess list</p>
                 <FlatButton  label="RESTART" onClick={this.onRestartProccess} style={styles.buttonStart} />
                 <FlatButton  label="STOP" onClick={this.onStopProccess} style={styles.buttonStop} />
                 <FlatButton  label="KILL" onClick={this.onKillProccess} style={styles.buttonKill} />
-                <FlatButton label="REFRESH" onClick={this.loadList} style={styles.buttonRefresh}></FlatButton>
+                <IconButton  onClick={this.loadList} style={styles.buttonRefresh}><img src="images/refresh.png" width={35} height={35} /></IconButton>
                 {this.state.loading === false ?
                     <div className="tableProcess">
                         <ProccessTable data={this.state.proccessList} selectedItemsFunc={this.selectedChanged}/>
