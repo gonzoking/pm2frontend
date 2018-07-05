@@ -1,0 +1,26 @@
+{
+  "name": "pm2-manager",
+  "version": "1.0.0",
+  "main": "src/app.js",
+  "scripts": {
+    "start": "electron .",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "license": "ISC",
+  "dependencies": {
+    "electron-is-dev": "^0.3.0",
+    "electron-reload": "^1.2.2",
+    "pm2": "^3.0.0",
+    "react": "^15.4.2",
+    "react-dom": "^15.4.2",
+    "react-router": "^3.0.2",
+    "material-ui": "0.19.4"
+  },
+  "devDependencies": {
+    "babel-plugin-transform-class-properties": "^6.23.0",
+    "babel-preset-es2016-node5": "^1.1.2",
+    "babel-preset-react": "^6.23.0",
+    "electron-packager": "^8.5.2",
+    "electron-prebuilt-compile": "1.6.2"
+  }
+}

@@ -1,0 +1,44 @@
+
+.loading-indicator {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    height: 100%;
+    width: 100%;
+    margin-top:30%;
+}
+.loading-indicator__label {
+    margin-top: 10px;
+    font-size: 12px;
+    color: blue;
+}
+
+.tableRow td{
+    height:15px;
+}
+
+.tableProcess{
+    height: 100%;
+    overflow: auto;
+}
+
+.main{
+    height:100%;
+}
+
+.blockDiv{
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    opacity: 0.5;
+    background-color: lightgrey;
+    color: blue;
+    font-weight: bold;
+    text-align: center;
+    padding-top: 30%;
+    padding-bottom: auto;
+    z-index:10000;
+}
