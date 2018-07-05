@@ -1,0 +1,11 @@
+.idea
+.DS_Store
+*.log
+node_modules
+dist
+public/index.html
+/yarn.lock
+app/assets/resources/baseConfig.js
+app/details.js
+app/styles/colors.js
+.vscode/**
