@@ -51,3 +51,35 @@
 .refresh_icon{
     background-image: url('/images/refresh.png');
 }
+
+.rootlog{
+    position: absolute;
+    right:0;
+    left:0;
+    top:0;
+    bottom:0;
+}
+.logs{
+    position: absolute;
+    right:0;
+    left:0;
+    top:0;
+    bottom:0;
+
+}
+
+.logs p{
+    text-align: center;
+}
+
+.logs__info{
+
+    position: absolute;
+    right:0;
+    left:0;
+    top:40px;
+    bottom:0;
+    border:solid 2px green;
+    overflow-y: auto ;
+
+}

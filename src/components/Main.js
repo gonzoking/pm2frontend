@@ -3,7 +3,6 @@ import pm2 from 'pm2';
 import LoadingIndicator from './LoadingIndicator';
 import ProccessTable from './Table';
 import FlatButton from 'material-ui/FlatButton';
-import Refresh from "./Refresh";
 import IconButton from 'material-ui/IconButton';
 
 const styles = {
@@ -51,7 +50,7 @@ export class Main extends React.Component {
 
         this.selectedProccess = [];
         this.state = {proccessList: [], loading: true, showBlock: false};
-        this.loadFalg = true;
+
         pm2.connect((err) => {
             if(err) {
                 console.log('error connecting to pm2');
@@ -66,53 +65,56 @@ export class Main extends React.Component {
 
     onKillProccess() {
         let counter = 0;
-
-        this.setState({showBlock:true});
-        this.selectedProccess.forEach(item => {
-            pm2.delete(item, (err) => {
-                if (err) {
-                    console.log('failed to delete proccess ' + item);
-                }
-                counter++;
-                if (counter === this.selectedProccess.length) {
-                    this.loadList();
-                }
+        if(this.selectedProccess.length > 0) {
+            this.setState({showBlock: true});
+            this.selectedProccess.forEach(item => {
+                pm2.delete(item, (err) => {
+                    if (err) {
+                        console.log('failed to delete proccess ' + item);
+                    }
+                    counter++;
+                    if (counter === this.selectedProccess.length) {
+                        this.loadList();
+                    }
+                });
             });
-        });
+        }
     }
 
     onRestartProccess() {
         let counter = 0;
-
-        this.setState({showBlock:true});
-        this.selectedProccess.forEach(item => {
-            pm2.restart(item, (err) => {
-                if (err) {
-                    console.log('failed to restart proccess ' + item);
-                }
-                counter++;
-                if (counter === this.selectedProccess.length) {
-                    this.loadList();
-                }
+        if(this.selectedProccess.length > 0) {
+            this.setState({showBlock: true});
+            this.selectedProccess.forEach(item => {
+                pm2.restart(item, (err) => {
+                    if (err) {
+                        console.log('failed to restart proccess ' + item);
+                    }
+                    counter++;
+                    if (counter === this.selectedProccess.length) {
+                        this.loadList();
+                    }
+                });
             });
-        });
+        }
     }
 
     onStopProccess() {
         let counter = 0;
-
-        this.setState({showBlock:true});
-        this.selectedProccess.forEach(item => {
-            pm2.stop(item, (err) => {
-                if (err) {
-                    console.log('failed to stop proccess ' + item);
-                }
-                counter++;
-                if (counter === this.selectedProccess.length) {
-                    this.loadList();
-                }
+        if(this.selectedProccess.length > 0) {
+            this.setState({showBlock: true});
+            this.selectedProccess.forEach(item => {
+                pm2.stop(item, (err) => {
+                    if (err) {
+                        console.log('failed to stop proccess ' + item);
+                    }
+                    counter++;
+                    if (counter === this.selectedProccess.length) {
+                        this.loadList();
+                    }
+                });
             });
-        });
+        }
     }
 
     loadList(){
@@ -121,9 +123,9 @@ export class Main extends React.Component {
             //console.log('procceslist ='  +JSON.stringify(procceslist));
             const prList = procceslist.map((procces) => {
                 return {
-                    key: procces.pm_id, id: procces.pm_id, name: procces.name,
+                    key: procces.pm_id, id: procces.pm_id, name: procces.name,pid: procces.pid,
                     status: procces.pm2_env.status, restart: procces.pm2_env.restart_time,
-                    memory: procces.monit.memory
+                    memory: procces.monit.memory,errlog:procces.pm2_env.pm_err_log_path,infolog:procces.pm2_env.pm_out_log_path
                 }
             });
             this.setState({proccessList: prList, loading: false, showBlock: false});
