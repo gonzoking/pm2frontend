@@ -72,14 +72,19 @@
     text-align: center;
 }
 
-.logs__info{
-
+.logs__box{
     position: absolute;
     right:0;
     left:0;
     top:40px;
     bottom:0;
-    border:solid 2px green;
     overflow-y: auto ;
+}
 
+.logs__info{
+    border:solid 2px green;
+}
+
+.logs__err{
+    border:solid 2px red;
 }
