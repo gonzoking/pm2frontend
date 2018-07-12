@@ -64,11 +64,10 @@ export default class ProccessTable extends Component {
     }
 
     onCellClick(row,columnid){
-        console.log(columnid);
         if(columnid === 0 || columnid === 1){
             const BrowserWindow = remote.BrowserWindow;
             var win = new BrowserWindow({ width: 800, height: 600 });
-            win.webContents.openDevTools();
+            //win.webContents.openDevTools();
             const logType = columnid === 0 ? 'info' : 'err';
             win.loadURL(`file://${__dirname}/log.html?name=${this.props.data[row].name}&errpath=${this.props.data[row].errlog}&infolog=${this.props.data[row].infolog}&logType=${logType}`);
         }

@@ -92,8 +92,6 @@ export class LogBlock extends React.Component {
         file.on('end', () => {
             this.loadFirstTime();
         });
-
-
     }
 
     render() {
