@@ -96,8 +96,8 @@ export class LogBlock extends React.Component {
     render() {
         return (
             <div className="logs">
-                <p><b>{this.name} - {this.logType === 'info' ? 'Info Log' : 'Error Log'}</b></p>
-                <div className={this.logType === 'info' ? 'logs__info logs__box' : 'logs__err logs__box'} dangerouslySetInnerHTML={{__html: this.state.infolog}}>
+                <p><b>{this.name} - {this.logType === 'info' ? <span style={{color:'green'}}>Info Log</span> : <span style={{color:'red'}}>Error Log</span>}</b></p>
+                <div className="logs__box" dangerouslySetInnerHTML={{__html: this.state.infolog}}>
 
                 </div>
             </div>

@@ -120,7 +120,7 @@ export class Main extends React.Component {
                 <FlatButton  label="RESTART" onClick={this.onRestartProccess} style={styles.buttonStart} />
                 <FlatButton  label="STOP" onClick={this.onStopProccess} style={styles.buttonStop} />
                 <FlatButton  label="KILL" onClick={this.onKillProccess} style={styles.buttonKill} />
-                <IconButton  onClick={this.refresh} style={styles.buttonRefresh}><img src="images/refresh.png" width={30} height={30} /></IconButton>
+                <IconButton tooltip="Refresh"  onClick={this.refresh} style={styles.buttonRefresh}><img src="images/refreshBtn.png" width={30} height={30} /></IconButton>
                 {this.state.loading === false ?
                     <div className="tableProcess">
                         <ProccessTable data={this.state.proccessList} selectedItemsFunc={this.selectedChanged}/>
