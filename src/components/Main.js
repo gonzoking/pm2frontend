@@ -48,7 +48,7 @@ export class Main extends React.Component {
         this.onKillProccess = this.onKillProccess.bind(this);
         this.selectedChanged = this.selectedChanged.bind(this);
         this.pm2RunAction = this.pm2RunAction.bind(this);
-
+        this.refresh = this.refresh.bind(this);
         this.selectedProccess = [];
         this.state = {proccessList: [], loading: true, showBlock: false};
         openPm2Session();
@@ -83,10 +83,16 @@ export class Main extends React.Component {
                         this.loadList();
                     }
                 })
-
             });
         }
     }
+
+    refresh() {
+        this.setState({loading: true});
+        this.loadList();
+    }
+
+
 
     loadList(){
         pm2LoadList().then((procceslist) => {
@@ -114,7 +120,7 @@ export class Main extends React.Component {
                 <FlatButton  label="RESTART" onClick={this.onRestartProccess} style={styles.buttonStart} />
                 <FlatButton  label="STOP" onClick={this.onStopProccess} style={styles.buttonStop} />
                 <FlatButton  label="KILL" onClick={this.onKillProccess} style={styles.buttonKill} />
-                <IconButton  onClick={this.loadList} style={styles.buttonRefresh}><img src="images/refresh.png" width={35} height={35} /></IconButton>
+                <IconButton  onClick={this.refresh} style={styles.buttonRefresh}><img src="images/refresh.png" width={35} height={35} /></IconButton>
                 {this.state.loading === false ?
                     <div className="tableProcess">
                         <ProccessTable data={this.state.proccessList} selectedItemsFunc={this.selectedChanged}/>

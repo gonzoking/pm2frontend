@@ -71,14 +71,13 @@ export class LogBlock extends React.Component {
         if(this.logType === 'info') {
             text = text.replace(/info/g, `<span style='color:green'><b>info</b></span>`);
             text = text.replace(/\n/g, `<br/>`);
-            text = text.replace(/\[32m/g, ``);
-            text = text.replace(/0xE2\[39m/g, ``);
+            text = text.replace(/.\[32m/g, ``);
         }else {
             text = text.replace(/error/g, `<span style='color:red'><b>error</b></span>`);
             text = text.replace(/\n/g, `<br/>`);
-            text = text.replace(/\[31m/g, ``);
-            text = text.replace(/0xE2\[39m/g, ``);
+            text = text.replace(/.\[31m/g, ``);
         }
+        text = text.replace(/.\[39m/g, ``);
         return text;
     }
 
