@@ -1,9 +1,9 @@
 import React from 'react';
-import pm2 from 'pm2';
 import LoadingIndicator from './LoadingIndicator';
 import ProccessTable from './Table';
 import FlatButton from 'material-ui/FlatButton';
 import IconButton from 'material-ui/IconButton';
+import {openPm2Session, pm2RunAction, pm2LoadList} from './pm2service';
 
 const styles = {
     buttonStart: {
@@ -47,16 +47,13 @@ export class Main extends React.Component {
         this.onStopProccess = this.onStopProccess.bind(this);
         this.onKillProccess = this.onKillProccess.bind(this);
         this.selectedChanged = this.selectedChanged.bind(this);
+        this.pm2RunAction = this.pm2RunAction.bind(this);
 
         this.selectedProccess = [];
         this.state = {proccessList: [], loading: true, showBlock: false};
+        openPm2Session();
 
-        pm2.connect((err) => {
-            if(err) {
-                console.log('error connecting to pm2');
-            }});
-        pm2.disconnect();
-
+        //setInterval(this.loadList, 10000);
         this.loadList();
 
         this.selectedItems = [];
@@ -64,62 +61,35 @@ export class Main extends React.Component {
     }
 
     onKillProccess() {
-        let counter = 0;
-        if(this.selectedProccess.length > 0) {
-            this.setState({showBlock: true});
-            this.selectedProccess.forEach(item => {
-                pm2.delete(item, (err) => {
-                    if (err) {
-                        console.log('failed to delete proccess ' + item);
-                    }
-                    counter++;
-                    if (counter === this.selectedProccess.length) {
-                        this.loadList();
-                    }
-                });
-            });
-        }
+        this.pm2RunAction('delete');
     }
 
     onRestartProccess() {
-        let counter = 0;
-        if(this.selectedProccess.length > 0) {
-            this.setState({showBlock: true});
-            this.selectedProccess.forEach(item => {
-                pm2.restart(item, (err) => {
-                    if (err) {
-                        console.log('failed to restart proccess ' + item);
-                    }
-                    counter++;
-                    if (counter === this.selectedProccess.length) {
-                        this.loadList();
-                    }
-                });
-            });
-        }
+        this.pm2RunAction('restart');
     }
 
     onStopProccess() {
+        this.pm2RunAction('stop');
+    }
+
+    pm2RunAction(action) {
         let counter = 0;
         if(this.selectedProccess.length > 0) {
             this.setState({showBlock: true});
             this.selectedProccess.forEach(item => {
-                pm2.stop(item, (err) => {
-                    if (err) {
-                        console.log('failed to stop proccess ' + item);
-                    }
+                pm2RunAction(action, item).catch(err => {console.log(`failed to ${action} proccess `);}).then(() => {
                     counter++;
                     if (counter === this.selectedProccess.length) {
                         this.loadList();
                     }
-                });
+                })
+
             });
         }
     }
 
     loadList(){
-
-        pm2.list((err, procceslist) => {
+        pm2LoadList().then((procceslist) => {
             //console.log('procceslist ='  +JSON.stringify(procceslist));
             const prList = procceslist.map((procces) => {
                 return {

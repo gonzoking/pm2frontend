@@ -44,23 +44,29 @@ export default class ProccessTable extends Component {
 
         this.onRowSelection = this.onRowSelection.bind(this);
         this.onCellClick = this.onCellClick.bind(this);
+        this.isSelected = this.isSelected.bind(this);
+        this.selectedItems = [];
 
     }
 
     onRowSelection(rows){
 
-        let selectedItems = [];
+        this.selectedItems = [];
         if(rows==='all'){
-            selectedItems = this.props.data.filter(item => item.id);
+            this.selectedItems = this.props.data.filter(item => item.id);
         }else if(rows==='none'){
 
         } else {
             rows.forEach(row => {
-                selectedItems.push(this.props.data[row].id)
+                this.selectedItems.push(this.props.data[row].id)
             });
 
         }
-        this.props.selectedItemsFunc.call(this, selectedItems);
+        this.props.selectedItemsFunc.call(this, this.selectedItems);
+    }
+
+    isSelected(id){
+        return this.selectedItems.includes(id);
     }
 
     onCellClick(row,columnid){
