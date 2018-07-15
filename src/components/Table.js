@@ -16,6 +16,7 @@ import {remote} from 'electron';
 const styles = {
     tableRow: {
         height: '15px'
+
     },
 
     tableRowRed:{
@@ -45,6 +46,7 @@ export default class ProccessTable extends Component {
         this.onRowSelection = this.onRowSelection.bind(this);
         this.onCellClick = this.onCellClick.bind(this);
         this.isSelected = this.isSelected.bind(this);
+        this.getStripedStyle = this.getStripedStyle.bind(this);
         this.selectedItems = [];
 
     }
@@ -78,7 +80,9 @@ export default class ProccessTable extends Component {
             win.loadURL(`file://${__dirname}/log.html?name=${this.props.data[row].name}&errpath=${this.props.data[row].errlog}&infolog=${this.props.data[row].infolog}&logType=${logType}`);
         }
     }
-
+    getStripedStyle(index) {
+        return { background: index % 2 ? 'white' : '#f2f8ff' };
+    }
     render() {
         return (
                 <Table height="600px" selectable={true} multiSelectable={true} onRowSelection={this.onRowSelection} onCellClick={this.onCellClick}>
@@ -95,9 +99,9 @@ export default class ProccessTable extends Component {
                         </TableRow>
                     </TableHeader>
                     <TableBody displayRowCheckbox={true} deselectOnClickaway={false} showRowHover={true}
-                               stripedRows={true}>
+                               stripedRows={false}>
                         {this.props.data.map((row, index) => (
-                            <TableRow className="tableRow" key={index} style={styles.tableRow} >
+                            <TableRow key={index} style={this.getStripedStyle(index) }>
                                 <TableRowColumn style={styles.tableRow} width="20px">
                                     <IconButton tooltip="Info Log" style={styles.logButton}><img src="images/logBtn.png" width={20} height={30} />
                                     </IconButton>

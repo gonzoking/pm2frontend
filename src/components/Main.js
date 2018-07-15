@@ -8,7 +8,7 @@ import {openPm2Session, pm2RunAction, pm2LoadList} from './pm2service';
 const styles = {
     buttonStart: {
         position: 'absolute',
-        top:'10px',
+        top:'6px',
         right:'0px',
         color: '#26c2f0',
         width:'60px',
@@ -16,14 +16,14 @@ const styles = {
     },
     buttonStop: {
         position: 'absolute',
-        top:'10px',
+        top:'6px',
         right:'80px',
-        color: 'orange',
+        color: 'black',
         fontWeight: 'bold'
     },
     buttonKill: {
         position: 'absolute',
-        top:'10px',
+        top:'6px',
         right:'160px',
         color: 'red',
         fontWeight: 'bold'
@@ -120,7 +120,7 @@ export class Main extends React.Component {
                 <FlatButton  label="RESTART" onClick={this.onRestartProccess} style={styles.buttonStart} />
                 <FlatButton  label="STOP" onClick={this.onStopProccess} style={styles.buttonStop} />
                 <FlatButton  label="KILL" onClick={this.onKillProccess} style={styles.buttonKill} />
-                <IconButton  onClick={this.refresh} style={styles.buttonRefresh}><img src="images/refresh.png" width={35} height={35} /></IconButton>
+                <IconButton  onClick={this.refresh} style={styles.buttonRefresh}><img src="images/refresh.png" width={30} height={30} /></IconButton>
                 {this.state.loading === false ?
                     <div className="tableProcess">
                         <ProccessTable data={this.state.proccessList} selectedItemsFunc={this.selectedChanged}/>
