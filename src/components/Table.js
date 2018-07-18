@@ -48,11 +48,15 @@ export default class ProccessTable extends Component {
         this.isSelected = this.isSelected.bind(this);
         this.getStripedStyle = this.getStripedStyle.bind(this);
         this.selectedItems = [];
-
+        this.windowsList = [];
+        this.lastClickedColumn = undefined;
     }
 
     onRowSelection(rows){
 
+        /*if(this.lastClickedColumn === 0 || this.lastClickedColumn === 1){
+            return;
+        }*/
         this.selectedItems = [];
         if(rows==='all'){
             this.selectedItems = this.props.data.filter(item => item.id);
@@ -72,9 +76,24 @@ export default class ProccessTable extends Component {
     }
 
     onCellClick(row,columnid){
+        this.lastClickedColumn = columnid;
         if(columnid === 0 || columnid === 1){
             const BrowserWindow = remote.BrowserWindow;
+            const windowId = columnid +  ':' + this.props.data[row].pid;
+            if(this.windowsList.includes(windowId)){
+                return;
+            }
             var win = new BrowserWindow({ width: 800, height: 600 });
+            win.windowId = windowId;
+            this.windowsList.push(win.windowId);
+
+            win.on('close', (e) =>{
+                var index = this.windowsList.indexOf(win.windowId);
+                if (index > -1) {
+                    this.windowsList.splice(index, 1);
+                }
+            });
+
             //win.webContents.openDevTools();
             const logType = columnid === 0 ? 'info' : 'err';
             win.loadURL(`file://${__dirname}/log.html?name=${this.props.data[row].name}&errpath=${this.props.data[row].errlog}&infolog=${this.props.data[row].infolog}&logType=${logType}`);
@@ -101,8 +120,8 @@ export default class ProccessTable extends Component {
                     <TableBody displayRowCheckbox={true} deselectOnClickaway={false} showRowHover={true}
                                stripedRows={false}>
                         {this.props.data.map((row, index) => (
-                            <TableRow key={index} style={this.getStripedStyle(index) }>
-                                <TableRowColumn style={styles.tableRow} width="20px">
+                            <TableRow key={index} style={this.getStripedStyle(index)} >
+                                <TableRowColumn style={styles.tableRow} width="20px" >
                                     <IconButton tooltip="Info Log" style={styles.logButton}><img src="images/logBtn.png" width={20} height={30} />
                                     </IconButton>
 
