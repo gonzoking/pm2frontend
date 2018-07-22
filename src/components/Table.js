@@ -54,12 +54,9 @@ export default class ProccessTable extends Component {
 
     onRowSelection(rows){
 
-        /*if(this.lastClickedColumn === 0 || this.lastClickedColumn === 1){
-            return;
-        }*/
         this.selectedItems = [];
         if(rows==='all'){
-            this.selectedItems = this.props.data.filter(item => item.id);
+            this.selectedItems = this.props.data.map(item => item.id);
         }else if(rows==='none'){
 
         } else {
