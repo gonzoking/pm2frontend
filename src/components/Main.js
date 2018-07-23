@@ -4,9 +4,10 @@ import ProccessTable from './Table';
 import FlatButton from 'material-ui/FlatButton';
 import IconButton from 'material-ui/IconButton';
 import {openPm2Session, pm2RunAction, pm2LoadList} from './pm2service';
+import {remote} from 'electron';
 
 const styles = {
-    buttonStart: {
+    buttonReStart: {
         position: 'absolute',
         top:'6px',
         right:'0px',
@@ -27,8 +28,14 @@ const styles = {
         right:'160px',
         color: 'red',
         fontWeight: 'bold'
-    }
-    ,
+    },
+    buttonStart:{
+        position: 'absolute',
+        top:'6px',
+        right:'240px',
+        color: 'black',
+        fontWeight: 'bold'
+    },
     buttonRefresh: {
         position: 'absolute',
         top:'-2px',
@@ -46,6 +53,7 @@ export class Main extends React.Component {
         this.onRestartProccess = this.onRestartProccess.bind(this);
         this.onStopProccess = this.onStopProccess.bind(this);
         this.onKillProccess = this.onKillProccess.bind(this);
+        this.onStartProccess = this.onStartProccess.bind(this);
         this.selectedChanged = this.selectedChanged.bind(this);
         this.pm2RunAction = this.pm2RunAction.bind(this);
         this.refresh = this.refresh.bind(this);
@@ -58,6 +66,23 @@ export class Main extends React.Component {
 
         this.selectedItems = [];
         this.loadingFlag = true;
+    }
+
+
+
+    onStartProccess() {
+
+        /*dialog.showOpenDialog(mainWindow, {
+            properties: ['openDirectory']
+        })
+*/
+        const BrowserWindow = remote.BrowserWindow;
+        var win = new BrowserWindow({title: 'Start a script', width: 640, height: 360 });
+        win.loadURL(`file://${__dirname}/start.html`);
+        //win.webContents.openDevTools();
+        win.on('close', (e) =>{
+           setTimeout(this.loadList(), 2000);
+        });
     }
 
     onKillProccess() {
@@ -117,9 +142,10 @@ export class Main extends React.Component {
             <div className="main">
                 {this.state.showBlock ? <div className="blockDiv">WORKING...</div> : ''}
                 <p className="maintitle">PM2 - Proccess list</p>
-                <FlatButton  label="RESTART" onClick={this.onRestartProccess} style={styles.buttonStart} />
+                <FlatButton  label="RESTART" onClick={this.onRestartProccess} style={styles.buttonReStart} />
                 <FlatButton  label="STOP" onClick={this.onStopProccess} style={styles.buttonStop} />
                 <FlatButton  label="KILL" onClick={this.onKillProccess} style={styles.buttonKill} />
+                <FlatButton  label="START" onClick={this.onStartProccess} style={styles.buttonStart} />
                 <IconButton tooltip="Refresh"  onClick={this.refresh} style={styles.buttonRefresh}><img src="images/refreshBtn.png" width={30} height={30} /></IconButton>
                 {this.state.loading === false ?
                     <div className="tableProcess">
