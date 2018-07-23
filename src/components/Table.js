@@ -44,12 +44,12 @@ export default class ProccessTable extends Component {
         super(props);
 
         this.onRowSelection = this.onRowSelection.bind(this);
-        this.onCellClick = this.onCellClick.bind(this);
         this.isSelected = this.isSelected.bind(this);
         this.getStripedStyle = this.getStripedStyle.bind(this);
+        this.clickInfoLog = this.clickInfoLog.bind(this);
         this.selectedItems = [];
         this.windowsList = [];
-        this.lastClickedColumn = undefined;
+
     }
 
     onRowSelection(rows){
@@ -72,36 +72,39 @@ export default class ProccessTable extends Component {
         return this.selectedItems.includes(id);
     }
 
-    onCellClick(row,columnid){
-        this.lastClickedColumn = columnid;
-        if(columnid === 0 || columnid === 1){
-            const BrowserWindow = remote.BrowserWindow;
-            const windowId = columnid +  ':' + this.props.data[row].pid;
-            if(this.windowsList.includes(windowId)){
-                return;
-            }
-            var win = new BrowserWindow({ width: 800, height: 600 });
-            win.windowId = windowId;
-            this.windowsList.push(win.windowId);
-
-            win.on('close', (e) =>{
-                var index = this.windowsList.indexOf(win.windowId);
-                if (index > -1) {
-                    this.windowsList.splice(index, 1);
-                }
-            });
-
-            //win.webContents.openDevTools();
-            const logType = columnid === 0 ? 'info' : 'err';
-            win.loadURL(`file://${__dirname}/log.html?name=${this.props.data[row].name}&errpath=${this.props.data[row].errlog}&infolog=${this.props.data[row].infolog}&logType=${logType}`);
-        }
-    }
     getStripedStyle(index) {
         return { background: index % 2 ? 'white' : '#f2f8ff' };
     }
+
+    clickInfoLog(event, row, columnid) {
+        event.stopPropagation();
+        event.preventDefault();
+        const BrowserWindow = remote.BrowserWindow;
+        const windowId = columnid +  ':' + this.props.data[row].pid;
+        if(this.windowsList.includes(windowId)){
+            return;
+        }
+        var win = new BrowserWindow({ width: 800, height: 600 });
+        win.windowId = windowId;
+        this.windowsList.push(win.windowId);
+
+        win.on('close', (e) =>{
+            var index = this.windowsList.indexOf(win.windowId);
+            if (index > -1) {
+                this.windowsList.splice(index, 1);
+            }
+        });
+
+        //win.webContents.openDevTools();
+        const logType = columnid === 0 ? 'info' : 'err';
+        win.loadURL(`file://${__dirname}/log.html?name=${this.props.data[row].name}&errpath=${this.props.data[row].errlog}&infolog=${this.props.data[row].infolog}&logType=${logType}`);
+
+
+    }
+
     render() {
         return (
-                <Table height="600px" selectable={true} multiSelectable={true} onRowSelection={this.onRowSelection} onCellClick={this.onCellClick}>
+                <Table height="600px" selectable={true} multiSelectable={true} onRowSelection={this.onRowSelection} >
                     <TableHeader displaySelectAll={true} adjustForCheckbox={true} enableSelectAll={true}>
                         <TableRow>
                             <TableHeaderColumn tooltip="Log window" width="20px">LOG</TableHeaderColumn>
@@ -119,12 +122,12 @@ export default class ProccessTable extends Component {
                         {this.props.data.map((row, index) => (
                             <TableRow key={index} style={this.getStripedStyle(index)} >
                                 <TableRowColumn style={styles.tableRow} width="20px" >
-                                    <IconButton tooltip="Info Log" style={styles.logButton}><img src="images/logBtn.png" width={20} height={30} />
+                                    <IconButton onClick={event => this.clickInfoLog(event, index,0) } tooltip="Info Log" style={styles.logButton}><img src="images/logBtn.png" width={20} height={30} />
                                     </IconButton>
 
                                 </TableRowColumn>
                                 <TableRowColumn style={styles.tableRow} width="20px">
-                                    <IconButton tooltip="Error Log" style={styles.logButton}><img src="images/logErrBtn.png" width={20} height={30} />
+                                    <IconButton onClick={event => this.clickInfoLog(event, index,1) } tooltip="Error Log" style={styles.logButton}><img src="images/logErrBtn.png" width={20} height={30} />
                                     </IconButton>
                                 </TableRowColumn>
                                 <TableRowColumn style={styles.tableRow} >{index}</TableRowColumn>
