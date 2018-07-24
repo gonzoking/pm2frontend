@@ -86,3 +86,7 @@
 .logs__err{
     border:solid 2px red;
 }
+
+.start__error{
+    color: red;
+}

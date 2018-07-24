@@ -81,7 +81,7 @@ export class Main extends React.Component {
         win.loadURL(`file://${__dirname}/start.html`);
         //win.webContents.openDevTools();
         win.on('close', (e) =>{
-           setTimeout(this.loadList(), 2000);
+            this.loadList();
         });
     }
 
