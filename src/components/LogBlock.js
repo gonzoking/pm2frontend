@@ -1,5 +1,5 @@
 import React from "react";
-
+import TextField from 'material-ui/TextField';
 import fs from 'fs';
 
 export class LogBlock extends React.Component {
@@ -12,12 +12,14 @@ export class LogBlock extends React.Component {
         this.proccessText = this.proccessText.bind(this);
         this.splitQueryParams = this.splitQueryParams.bind(this);
         this.loadNextOne = this.loadNextOne.bind(this);
-        this.state = {infolog: ''};
+        this.handleSearchChange = this.handleSearchChange.bind(this);
+        this.state = {infolog: '', search:''};
 
         this.splitQueryParams();
 
         this.lastLength = 0;
         this.getLogFileSize();
+        this.originText = '';
     }
 
     watchLogs(){
@@ -47,6 +49,7 @@ export class LogBlock extends React.Component {
 
         stream.on('data',(buf) =>{
             this.lastLength = this.lastLength + buf.toString().length;
+
             this.setState({infolog: this.proccessText(this.state.infolog + buf.toString())});
         });
     }
@@ -78,6 +81,7 @@ export class LogBlock extends React.Component {
             text = text.replace(/.\[31m/g, ``);
         }
         text = text.replace(/.\[39m/g, ``);
+        this.originText = text;
         return text;
     }
 
@@ -93,10 +97,30 @@ export class LogBlock extends React.Component {
         });
     }
 
+    handleSearchChange(event) {
+        if(event.target.value === '') {
+            this.setState({
+                infolog: this.originText,
+                search: event.target.value
+            });
+            return;
+        }
+        const replace = event.target.value;
+        var re = new RegExp(replace,'g');
+
+        let text = this.originText !== ''? this.originText : this.state.infolog;
+        text = text.replace(re, `<span style='color:orange'><b>${event.target.value}</b></span>`);
+        this.setState({
+            infolog: text,
+            search: event.target.value
+        });
+    }
+
     render() {
         return (
             <div className="logs">
                 <p><b>{this.name} - {this.logType === 'info' ? <span style={{color:'green'}}>Info Log</span> : <span style={{color:'red'}}>Error Log</span>}</b></p>
+                <TextField value={this.state.search} hintText="Search text" style={{marginTop:'0'}}  onChange={this.handleSearchChange}  style={{width:'540px'}} />
                 <div className="logs__box" dangerouslySetInnerHTML={{__html: this.state.infolog}}>
 
                 </div>
