@@ -8,6 +8,17 @@ export const openPm2Session = () => {
     pm2.disconnect();
 }
 
+export const pm2StartAction = (item) => {
+    return new Promise((resolve, reject) => {
+        pm2.start(item,  (err) => {
+            if (err) {
+                reject(err);
+            }
+            resolve();
+        });
+    });
+}
+
 export const pm2RunAction = (action, item) => {
     return new Promise((resolve, reject) => {
         pm2[action](item, (err) => {
