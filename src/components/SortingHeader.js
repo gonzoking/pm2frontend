@@ -6,7 +6,7 @@ export default class SortingHeader extends Component{
         super(props);
     }
     render() {
-        return (<div id={this.props.headerId} onClick={this.props.clickHandler}>{this.props.label}<div className={'sort-arrow' + ' ' + this.props.className}></div></div>);
+        return (<div className="sort-header" id={this.props.headerId} onClick={this.props.clickHandler}>{this.props.label}<div className={'sort-arrow' + ' ' + this.props.className}></div></div>);
     }
 }
 

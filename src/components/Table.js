@@ -52,17 +52,19 @@ export default class ProccessTable extends Component {
 
         this.selectedItems = [];
         this.windowsList = [];
-        this.state={nameSort: undefined};
+        this.state={nameSort: undefined, statusSort: undefined, idSort: undefined};
     }
 
     clickHeader(event) {
         let direction = undefined;
+        const indexSort = event.target.id + 'Sort';
+        direction = this.state[indexSort] === 'desc' ? 'asc' : 'desc';
         if(event.target.id === 'name') {
-            direction = this.state.nameSort === 'desc' ? 'asc' : 'desc';
-            this.setState({nameSort : direction, idSort : undefined});
+            this.setState({nameSort : direction, idSort : undefined, statusSort: undefined});
         }else if(event.target.id === 'id') {
-            direction = this.state.idSort === 'desc' ? 'asc' : 'desc';
-            this.setState({nameSort : undefined, idSort : direction});
+            this.setState({nameSort : undefined, idSort : direction, statusSort: undefined});
+        }else if(event.target.id === 'status'){
+            this.setState({nameSort : undefined, idSort : undefined, statusSort: direction});
         }
 
         this.props.sortFunction(event.target.id, direction);
@@ -120,6 +122,7 @@ export default class ProccessTable extends Component {
     render() {
         const nameSortClass = this.state.nameSort !== undefined ? this.state.nameSort === 'asc' ? 'arrow-down' : 'arrow-up' : '';
         const idSortClass = this.state.idSort !== undefined ? this.state.idSort === 'asc' ? 'arrow-down' : 'arrow-up' : '';
+        const statusSortClass = this.state.statusSort !== undefined ? this.state.statusSort === 'asc' ? 'arrow-down' : 'arrow-up' : '';
         return (
                 <Table height="600px" selectable={true} multiSelectable={true} onRowSelection={this.onRowSelection} >
                     <TableHeader displaySelectAll={true} adjustForCheckbox={true} enableSelectAll={true}>
@@ -129,7 +132,7 @@ export default class ProccessTable extends Component {
                             <TableHeaderColumn tooltip="ID" width="60px"><SortingHeader headerId='id' label="ID" clickHandler={this.clickHeader} className={idSortClass}></SortingHeader></TableHeaderColumn>
                             <TableHeaderColumn tooltip="Name" width="260px"><SortingHeader headerId='name' label="Name" clickHandler={this.clickHeader} className={nameSortClass}></SortingHeader></TableHeaderColumn>
                             <TableHeaderColumn tooltip="PID" >PID</TableHeaderColumn>
-                            <TableHeaderColumn tooltip="Status">Status</TableHeaderColumn>
+                            <TableHeaderColumn tooltip="Status" width="80px"><SortingHeader headerId='status' label="Status" clickHandler={this.clickHeader} className={statusSortClass}></SortingHeader></TableHeaderColumn>
                             <TableHeaderColumn tooltip="Restart">Restarts</TableHeaderColumn>
                             <TableHeaderColumn tooltip="Memory">Memory</TableHeaderColumn>
                         </TableRow>
@@ -150,7 +153,7 @@ export default class ProccessTable extends Component {
                                 <TableRowColumn width="60px" style={styles.tableRow} >{row.id}</TableRowColumn>
                                 <TableRowColumn style={styles.tableRow} width="260px"><b>{row.name}</b></TableRowColumn>
                                 <TableRowColumn style={styles.tableRow} >{row.pid}</TableRowColumn>
-                                <TableRowColumn style={row.status === 'online' ?styles.tableRowGreen : styles.tableRowRed}>{row.status}</TableRowColumn>
+                                <TableRowColumn width="80px" style={row.status === 'online' ?styles.tableRowGreen : styles.tableRowRed}>{row.status}</TableRowColumn>
                                 <TableRowColumn style={styles.tableRow}>{row.restart}</TableRowColumn>
                                 <TableRowColumn style={styles.tableRow}>{row.memory}</TableRowColumn>
                             </TableRow>

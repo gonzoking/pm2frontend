@@ -91,6 +91,9 @@
 .start__error{
     color: red;
 }
+.sort-header{
+    cursor: pointer;
+}
 
 .sort-arrow{
     float: right;
