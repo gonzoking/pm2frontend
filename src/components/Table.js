@@ -12,6 +12,7 @@ import PropTypes from 'prop-types';
 import IconButton from 'material-ui/IconButton';
 
 import {remote} from 'electron';
+import SortingHeader from './SortingHeader';
 
 const styles = {
     tableRow: {
@@ -47,11 +48,25 @@ export default class ProccessTable extends Component {
         this.isSelected = this.isSelected.bind(this);
         this.getStripedStyle = this.getStripedStyle.bind(this);
         this.clickInfoLog = this.clickInfoLog.bind(this);
+        this.clickHeader = this.clickHeader.bind(this);
+
         this.selectedItems = [];
         this.windowsList = [];
-
+        this.state={nameSort: undefined};
     }
 
+    clickHeader(event) {
+        let direction = undefined;
+        if(event.target.id === 'name') {
+            direction = this.state.nameSort === 'desc' ? 'asc' : 'desc';
+            this.setState({nameSort : direction, idSort : undefined});
+        }else if(event.target.id === 'id') {
+            direction = this.state.idSort === 'desc' ? 'asc' : 'desc';
+            this.setState({nameSort : undefined, idSort : direction});
+        }
+
+        this.props.sortFunction(event.target.id, direction);
+    }
     onRowSelection(rows){
 
         this.selectedItems = [];
@@ -103,14 +118,16 @@ export default class ProccessTable extends Component {
     }
 
     render() {
+        const nameSortClass = this.state.nameSort !== undefined ? this.state.nameSort === 'asc' ? 'arrow-down' : 'arrow-up' : '';
+        const idSortClass = this.state.idSort !== undefined ? this.state.idSort === 'asc' ? 'arrow-down' : 'arrow-up' : '';
         return (
                 <Table height="600px" selectable={true} multiSelectable={true} onRowSelection={this.onRowSelection} >
                     <TableHeader displaySelectAll={true} adjustForCheckbox={true} enableSelectAll={true}>
                         <TableRow>
                             <TableHeaderColumn tooltip="Log window" width="20px">LOG</TableHeaderColumn>
                             <TableHeaderColumn tooltip="Log Error window" width="20px">ERR</TableHeaderColumn>
-                            <TableHeaderColumn tooltip="ID" >ID</TableHeaderColumn>
-                            <TableHeaderColumn tooltip="Name" width="260px">Name</TableHeaderColumn>
+                            <TableHeaderColumn tooltip="ID" width="60px"><SortingHeader headerId='id' label="ID" clickHandler={this.clickHeader} className={idSortClass}></SortingHeader></TableHeaderColumn>
+                            <TableHeaderColumn tooltip="Name" width="260px"><SortingHeader headerId='name' label="Name" clickHandler={this.clickHeader} className={nameSortClass}></SortingHeader></TableHeaderColumn>
                             <TableHeaderColumn tooltip="PID" >PID</TableHeaderColumn>
                             <TableHeaderColumn tooltip="Status">Status</TableHeaderColumn>
                             <TableHeaderColumn tooltip="Restart">Restarts</TableHeaderColumn>
@@ -130,7 +147,7 @@ export default class ProccessTable extends Component {
                                     <IconButton onClick={event => this.clickInfoLog(event, index,1) } tooltip="Error Log" style={styles.logButton}><img src="images/logErrBtn.png" width={20} height={30} />
                                     </IconButton>
                                 </TableRowColumn>
-                                <TableRowColumn style={styles.tableRow} >{index}</TableRowColumn>
+                                <TableRowColumn width="60px" style={styles.tableRow} >{row.id}</TableRowColumn>
                                 <TableRowColumn style={styles.tableRow} width="260px"><b>{row.name}</b></TableRowColumn>
                                 <TableRowColumn style={styles.tableRow} >{row.pid}</TableRowColumn>
                                 <TableRowColumn style={row.status === 'online' ?styles.tableRowGreen : styles.tableRowRed}>{row.status}</TableRowColumn>
@@ -146,5 +163,7 @@ export default class ProccessTable extends Component {
 
 ProccessTable.propTypes = {
     data: PropTypes.array.isRequired,
-    selectedItemsFunc: PropTypes.func.isRequired
+    selectedItemsFunc: PropTypes.func.isRequired,
+    sortFunction: PropTypes.func
+
 };

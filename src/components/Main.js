@@ -5,6 +5,7 @@ import FlatButton from 'material-ui/FlatButton';
 import IconButton from 'material-ui/IconButton';
 import {openPm2Session, pm2RunAction, pm2LoadList} from './pm2service';
 import {remote} from 'electron';
+import orderBy from 'lodash/orderBy';
 
 const styles = {
     buttonReStart: {
@@ -57,6 +58,7 @@ export class Main extends React.Component {
         this.selectedChanged = this.selectedChanged.bind(this);
         this.pm2RunAction = this.pm2RunAction.bind(this);
         this.refresh = this.refresh.bind(this);
+        this.sortData = this.sortData.bind(this);
         this.selectedProccess = [];
         this.state = {proccessList: [], loading: true, showBlock: false};
         openPm2Session();
@@ -66,21 +68,20 @@ export class Main extends React.Component {
 
         this.selectedItems = [];
         this.loadingFlag = true;
+        //const BrowserWindow = remote.BrowserWindow;
+        this.startWin = undefined;
+        this.prList = [];
     }
 
 
 
     onStartProccess() {
 
-        /*dialog.showOpenDialog(mainWindow, {
-            properties: ['openDirectory']
-        })
-*/
-        const BrowserWindow = remote.BrowserWindow;
-        var win = new BrowserWindow({title: 'Start a script', width: 640, height: 360 });
-        win.loadURL(`file://${__dirname}/start.html`);
+        this.startWin = new remote.BrowserWindow({title: 'Start a script', width: 640, height: 360});
+        this.startWin.loadURL(`file://${__dirname}/start.html`);
+
         //win.webContents.openDevTools();
-        win.on('close', (e) =>{
+        this.startWin.on('close', (e) =>{
             this.loadList();
         });
     }
@@ -122,19 +123,28 @@ export class Main extends React.Component {
     loadList(){
         pm2LoadList().then((procceslist) => {
             //console.log('procceslist ='  +JSON.stringify(procceslist));
-            const prList = procceslist.map((procces) => {
+            this.prList = procceslist.map((procces) => {
                 return {
                     key: procces.pm_id, id: procces.pm_id, name: procces.name,pid: procces.pid,
                     status: procces.pm2_env.status, restart: procces.pm2_env.restart_time,
                     memory: procces.monit.memory,errlog:procces.pm2_env.pm_err_log_path,infolog:procces.pm2_env.pm_out_log_path
                 }
             });
-            this.setState({proccessList: prList, loading: false, showBlock: false});
+
+            this.setState({proccessList: this.prList, loading: false, showBlock: false});
         });
     }
 
     selectedChanged(selectedItems) {
         this.selectedProccess = selectedItems;
+    }
+
+    sortData(sortField, direction ){
+
+        if(sortField){
+            this.prList = orderBy(this.prList, [sortField], [direction === 'desc' ? 'desc' : 'asc']);
+            this.setState({proccessList: this.prList});
+        }
     }
 
     render() {
@@ -149,7 +159,7 @@ export class Main extends React.Component {
                 <IconButton tooltip="Refresh"  onClick={this.refresh} style={styles.buttonRefresh}><img src="images/refreshBtn.png" width={30} height={30} /></IconButton>
                 {this.state.loading === false ?
                     <div className="tableProcess">
-                        <ProccessTable data={this.state.proccessList} selectedItemsFunc={this.selectedChanged}/>
+                        <ProccessTable data={this.state.proccessList} selectedItemsFunc={this.selectedChanged} sortFunction={this.sortData}/>
                     </div>
                     :
                     <LoadingIndicator label={true}/>
