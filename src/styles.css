@@ -111,3 +111,7 @@
 .arrow-down {
     border-top: 5px solid black;
 }
+
+.disable-button{
+    opacity:0.2;
+}

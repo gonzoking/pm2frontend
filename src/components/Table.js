@@ -48,6 +48,7 @@ export default class ProccessTable extends Component {
         this.getStripedStyle = this.getStripedStyle.bind(this);
         this.clickInfoLog = this.clickInfoLog.bind(this);
         this.clickHeader = this.clickHeader.bind(this);
+        this.isSelected = this.isSelected.bind(this);
 
         this.selectedItems = [];
         this.windowsList = [];
@@ -121,6 +122,13 @@ export default class ProccessTable extends Component {
         return this.state[sortName] !== undefined ? this.state[sortName] === 'asc' ? 'arrow-up' : 'arrow-down' : '';
     }
 
+    isSelected(row) {
+        if(this.props.selectedRows.includes(row.id)){
+            return true;
+        }
+        return false;
+    }
+
     render() {
         const nameSortClass = this.setArrow('nameSort');
         const idSortClass = this.setArrow('idSort');
@@ -142,7 +150,7 @@ export default class ProccessTable extends Component {
                     <TableBody displayRowCheckbox={true} deselectOnClickaway={false} showRowHover={true}
                                stripedRows={false}>
                         {this.props.data.map((row, index) => (
-                            <TableRow key={index} style={this.getStripedStyle(index)} >
+                            <TableRow key={index} style={this.getStripedStyle(index)} selected={this.isSelected(row)}>
                                 <TableRowColumn style={styles.tableRow} width="20px" >
                                     <IconButton onClick={event => this.clickInfoLog(event, index,0) } tooltip="Info Log" style={styles.logButton}><img src="images/logBtn.png" width={20} height={30} />
                                     </IconButton>
@@ -169,6 +177,7 @@ export default class ProccessTable extends Component {
 ProccessTable.propTypes = {
     data: PropTypes.array.isRequired,
     selectedItemsFunc: PropTypes.func.isRequired,
-    sortFunction: PropTypes.func
+    sortFunction: PropTypes.func,
+    selectedRows: PropTypes.array.isRequired
 
 };

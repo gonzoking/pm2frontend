@@ -59,8 +59,8 @@ export class Main extends React.Component {
         this.pm2RunAction = this.pm2RunAction.bind(this);
         this.refresh = this.refresh.bind(this);
         this.sortData = this.sortData.bind(this);
-        this.selectedProccess = [];
-        this.state = {proccessList: [], loading: true, showBlock: false};
+        //this.selectedProccess = [];
+        this.state = {selectedProccess: [] ,proccessList: [], loading: true, showBlock: false, disableButton: true, sortField: undefined, sortDirection: undefined};
         openPm2Session();
 
         //setInterval(this.loadList, 10000);
@@ -100,12 +100,12 @@ export class Main extends React.Component {
 
     pm2RunAction(action) {
         let counter = 0;
-        if(this.selectedProccess.length > 0) {
+        if(this.state.selectedProccess.length > 0) {
             this.setState({showBlock: true});
-            this.selectedProccess.forEach(item => {
+            this.state.selectedProccess.forEach(item => {
                 pm2RunAction(action, item).catch(err => {console.log(`failed to ${action} proccess `);}).then(() => {
                     counter++;
-                    if (counter === this.selectedProccess.length) {
+                    if (counter === this.state.selectedProccess.length) {
                         this.loadList();
                     }
                 })
@@ -128,20 +128,24 @@ export class Main extends React.Component {
                     memory: procces.monit.memory,errlog:procces.pm2_env.pm_err_log_path,infolog:procces.pm2_env.pm_out_log_path
                 }
             });
-
+            if(this.state.sortField && this.state.sortDirection) {
+                this.prList = orderBy(this.prList, [this.state.sortField], [this.state.sortDirection === 'desc' ? 'desc' : 'asc']);
+            }
             this.setState({proccessList: this.prList, loading: false, showBlock: false});
         });
     }
 
     selectedChanged(selectedItems) {
-        this.selectedProccess = selectedItems;
+
+        //this.selectedProccess = selectedItems;
+        this.setState({selectedProccess: selectedItems, disableButton: selectedItems.length === 0});
     }
 
     sortData(sortField, direction ){
 
         if(sortField){
             this.prList = orderBy(this.prList, [sortField], [direction === 'desc' ? 'desc' : 'asc']);
-            this.setState({proccessList: this.prList});
+            this.setState({proccessList: this.prList, sortField: sortField, sortDirection: direction});
         }
     }
 
@@ -150,14 +154,14 @@ export class Main extends React.Component {
             <div className="main">
                 {this.state.showBlock ? <div className="blockDiv">WORKING...</div> : ''}
                 <p className="maintitle">PM2 - Proccess list</p>
-                <FlatButton  label="RESTART" onClick={this.onRestartProccess} style={styles.buttonReStart} />
-                <FlatButton  label="STOP" onClick={this.onStopProccess} style={styles.buttonStop} />
-                <FlatButton  label="KILL" onClick={this.onKillProccess} style={styles.buttonKill} />
-                <FlatButton  label="START" onClick={this.onStartProccess} style={styles.buttonStart} />
+                <FlatButton  label="RESTART" className={this.state.disableButton ? 'disable-button' : ''} disabled={this.state.disableButton} onClick={this.onRestartProccess} style={styles.buttonReStart} />
+                <FlatButton  label="STOP" className={this.state.disableButton ? 'disable-button' : ''} disabled={this.state.disableButton} onClick={this.onStopProccess} style={styles.buttonStop} />
+                <FlatButton  label="KILL" className={this.state.disableButton ? 'disable-button' : ''} disabled={this.state.disableButton} onClick={this.onKillProccess} style={styles.buttonKill} />
+                <FlatButton  label="START" className={this.state.disableButton ? 'disable-button' : ''} disabled={this.state.disableButton} onClick={this.onStartProccess} style={styles.buttonStart} />
                 <IconButton tooltip="Refresh"  onClick={this.refresh} style={styles.buttonRefresh}><img src="images/refreshBtn.png" width={30} height={30} /></IconButton>
                 {this.state.loading === false ?
                     <div className="tableProcess">
-                        <ProccessTable data={this.state.proccessList} selectedItemsFunc={this.selectedChanged} sortFunction={this.sortData}/>
+                        <ProccessTable data={this.state.proccessList} selectedRows={this.state.selectedProccess} selectedItemsFunc={this.selectedChanged} sortFunction={this.sortData}/>
                     </div>
                     :
                     <LoadingIndicator label={true}/>
