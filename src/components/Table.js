@@ -2,7 +2,6 @@ import React, {Component} from 'react';
 import {
     Table,
     TableBody,
-    TableFooter,
     TableHeader,
     TableHeaderColumn,
     TableRow,
@@ -116,13 +115,16 @@ export default class ProccessTable extends Component {
         const logType = columnid === 0 ? 'info' : 'err';
         win.loadURL(`file://${__dirname}/log.html?name=${this.props.data[row].name}&errpath=${this.props.data[row].errlog}&infolog=${this.props.data[row].infolog}&logType=${logType}`);
 
+    }
 
+    setArrow(sortName){
+        return this.state[sortName] !== undefined ? this.state[sortName] === 'asc' ? 'arrow-up' : 'arrow-down' : '';
     }
 
     render() {
-        const nameSortClass = this.state.nameSort !== undefined ? this.state.nameSort === 'asc' ? 'arrow-down' : 'arrow-up' : '';
-        const idSortClass = this.state.idSort !== undefined ? this.state.idSort === 'asc' ? 'arrow-down' : 'arrow-up' : '';
-        const statusSortClass = this.state.statusSort !== undefined ? this.state.statusSort === 'asc' ? 'arrow-down' : 'arrow-up' : '';
+        const nameSortClass = this.setArrow('nameSort');
+        const idSortClass = this.setArrow('idSort');
+        const statusSortClass = this.setArrow('statusSort');
         return (
                 <Table height="600px" selectable={true} multiSelectable={true} onRowSelection={this.onRowSelection} >
                     <TableHeader displaySelectAll={true} adjustForCheckbox={true} enableSelectAll={true}>

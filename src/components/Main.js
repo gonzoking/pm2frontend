@@ -118,8 +118,6 @@ export class Main extends React.Component {
         this.loadList();
     }
 
-
-
     loadList(){
         pm2LoadList().then((procceslist) => {
             //console.log('procceslist ='  +JSON.stringify(procceslist));
